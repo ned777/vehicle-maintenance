@@ -1,0 +1,9 @@
+<resources>
+    <!-- Matches the server's own "car style" pitch-black dashboard palette
+         (see server.py's CSS) so the native toolbar and the WebView-rendered
+         pages feel like one app. -->
+    <color name="bg">#000000</color>
+    <color name="panel">#0D0D0F</color>
+    <color name="accent">#D21F2E</color>
+    <color name="accent2">#E0A526</color>
+</resources>

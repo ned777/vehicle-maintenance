@@ -1,0 +1,46 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A simple tachometer dial: red rim, black face, three tick marks, and a
+         needle mid-sweep — reads as "car gauge" at a glance, no fine detail
+         that would vanish at launcher-icon size. Scaled to 60%, centered on
+         the dial's own center (54,54), matching this app family's icon
+         convention (see weather-widget/docsvault). -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.6"
+        android:scaleY="0.6">
+
+        <!-- Rim. -->
+        <path
+            android:pathData="M54,54 m-32,0 a32,32 0 1,0 64,0 a32,32 0 1,0 -64,0"
+            android:strokeColor="#D21F2E"
+            android:strokeWidth="7"
+            android:fillColor="#00000000" />
+        <!-- Recessed dial face. -->
+        <path android:pathData="M54,54 m-27,0 a27,27 0 1,0 54,0 a27,27 0 1,0 -54,0" android:fillColor="#0A0A0C" />
+
+        <!-- Tick marks, spread across the top arc. -->
+        <group android:pivotX="54" android:pivotY="54" android:rotation="-40">
+            <path android:pathData="M51,23 L57,23 L57,31 L51,31 Z" android:fillColor="#ECECEF" />
+        </group>
+        <group android:pivotX="54" android:pivotY="54" android:rotation="0">
+            <path android:pathData="M51,23 L57,23 L57,31 L51,31 Z" android:fillColor="#ECECEF" />
+        </group>
+        <group android:pivotX="54" android:pivotY="54" android:rotation="40">
+            <path android:pathData="M51,23 L57,23 L57,31 L51,31 Z" android:fillColor="#ECECEF" />
+        </group>
+
+        <!-- Needle, mid-sweep. -->
+        <group android:pivotX="54" android:pivotY="54" android:rotation="35">
+            <path android:pathData="M52,30 L56,30 L56,56 L52,56 Z" android:fillColor="#ECECEF" />
+        </group>
+
+        <!-- Hub. -->
+        <path android:pathData="M54,54 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" android:fillColor="#D21F2E" />
+        <path android:pathData="M54,54 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" android:fillColor="#ECECEF" />
+    </group>
+</vector>
