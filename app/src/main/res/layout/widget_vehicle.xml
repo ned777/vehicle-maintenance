@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The widget's own layout — see widget_sysmon.xml (sysmon-widget project) for
-  the general explanation of why widget layouts are restricted to a small
-  whitelist of View types. Either allGoodText OR itemsList is visible at any
-  one time, never both — VehicleWidgetProvider.updateOneWidget() toggles
-  which, and populates itemsList's rows (from widget_item_row.xml) in code.
+  The widget's own layout, fixed at 2x2 (see vehicle_widget_info.xml). Only
+  one of allGoodText / itemsList is visible at a time —
+  VehicleWidgetProvider.updateOneWidget() toggles which, and populates
+  itemsList's rows (from widget_item_row.xml) in code.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widgetRoot"
@@ -12,60 +11,48 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/widget_outline_background"
-    android:paddingTop="14dp"
-    android:paddingBottom="14dp"
-    android:paddingStart="14dp"
-    android:paddingEnd="14dp">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
 
-    <LinearLayout
+    <!-- Which vehicle this widget instance was configured to watch. -->
+    <TextView
+        android:id="@+id/vehicleNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:text="@string/app_name"
+        android:textColor="@color/accent"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:letterSpacing="0.04"
+        android:singleLine="true"
+        android:ellipsize="end" />
 
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/app_name"
-            android:textColor="@color/accent"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:letterSpacing="0.06" />
-
-        <TextView
-            android:id="@+id/updatedText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_dim"
-            android:textSize="10sp"
-            android:text="" />
-
-    </LinearLayout>
-
-    <!-- Shown only when there is nothing overdue or due soon. -->
+    <!-- Shown only when there is nothing overdue/due-soon, or on error. -->
     <TextView
         android:id="@+id/allGoodText"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:textColor="@color/ok"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:visibility="gone"
         android:text="" />
 
-    <!-- Populated with one widget_item_row per overdue/due-soon item. -->
+    <!-- Populated with up to two widget_item_row rows (the last one becomes
+         a "Read more" link instead of an item once there's overflow). -->
     <LinearLayout
         android:id="@+id/itemsList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="6dp"
-        android:orientation="vertical" />
+        android:layout_marginTop="4dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical" />
 
 </LinearLayout>

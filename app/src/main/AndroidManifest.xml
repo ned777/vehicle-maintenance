@@ -21,6 +21,21 @@
         </activity>
 
         <!--
+          The widget setup wizard (vehicle picker). Its intent-filter action,
+          APPWIDGET_CONFIGURE, is a standard system action — declaring it
+          here is what lets vehicle_widget_info.xml's
+          android:configure="com.vehiclemaintenance.app.WidgetConfigActivity"
+          attribute actually find and launch this specific Activity.
+        -->
+        <activity
+            android:name=".WidgetConfigActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <!--
           The home-screen widget's brain (see VehicleWidgetProvider.kt).
           com.vehiclemaintenance.app.ACTION_REFRESH is our own custom
           broadcast, fired when the widget is tapped.

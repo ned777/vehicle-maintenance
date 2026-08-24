@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  WidgetConfigActivity's screen: a title, a vehicle list (filled in from
+  code once MaintenanceClient.fetchVehicles() returns), and a loading/error
+  state for while that network call is in flight or if it fails.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_vehicle"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
+
+    <ProgressBar
+        android:id="@+id/configProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:id="@+id/configErrorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/config_error"
+        android:textColor="@color/text_dim"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/configRetryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/retry"
+        android:layout_marginTop="12dp"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/configVehicleListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+</LinearLayout>

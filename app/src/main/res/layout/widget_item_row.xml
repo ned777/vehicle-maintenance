@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  One overdue/due-soon row: a colored status dot, the service name, and its
-  detail line (e.g. "11,721 mi over · overdue since 2025-12-01"). Inflated
-  and added via RemoteViews.addView() in VehicleWidgetProvider — a bounded
-  handful of items per refresh, so a plain LinearLayout of these is simpler
-  than standing up a RemoteViewsService/ListView adapter for it.
+  One row: a colored status dot plus the service name only, no detail line —
+  a 2x2 widget doesn't have room for both, and the label alone is enough at
+  a glance. The same layout doubles as the "Read more" row (see
+  VehicleWidgetProvider.buildReadMoreRow()), which is why the root has an id
+  of its own: that's what gets its own setOnClickPendingIntent to open the
+  app, distinct from the rest of the widget's tap-to-refresh.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemRowRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -16,38 +18,21 @@
 
     <ImageView
         android:id="@+id/ledDot"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         android:src="@drawable/widget_led_overdue" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/itemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/itemLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:text="" />
-
-        <TextView
-            android:id="@+id/itemDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_dim"
-            android:textSize="11sp"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:text="" />
-
-    </LinearLayout>
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="" />
 
 </LinearLayout>

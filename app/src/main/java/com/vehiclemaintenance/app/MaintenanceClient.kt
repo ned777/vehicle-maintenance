@@ -4,56 +4,65 @@ import android.util.Base64
 import java.net.HttpURLConnection
 import java.net.URL
 
-/**
- * One item pulled off the server's dashboard: a single overdue or
- * due-soon service pill, e.g. "Brake Fluid Flush — 11,721 mi over".
- */
+/** One vehicle on the dashboard, as offered by the widget's vehicle picker. */
+data class Vehicle(val id: String, val name: String)
+
+/** One overdue or due-soon service pill for a specific vehicle. */
 data class MaintenanceItem(
-    val vehicleName: String,
+    val vehicleId: String,
     val status: String, // "overdue" or "due_soon"
-    val label: String,
-    val detail: String
+    val label: String
 )
 
 /**
  * The server (see MainActivity's WebView) renders the whole dashboard as
- * plain server-side HTML with no JSON API behind it — the pill status for
- * each service item only exists baked into that markup. Rather than stand
- * up a second API just for the widget, this scrapes the same dashboard page
- * the app itself already points at, the same way the WebView does.
+ * plain server-side HTML with no JSON API behind it — vehicle names and
+ * pill status only exist baked into that markup. Rather than stand up a
+ * second API just for the widget, this scrapes the same dashboard page the
+ * app itself already points at, the same way the WebView does.
  */
 object MaintenanceClient {
 
-    // Matches one <div class='vehicle-card'>...</div> block's start, so the
-    // page can be sliced into per-vehicle chunks (see fetchDueItems below).
+    private val vehicleHeaderRegex = Regex("<h2><a href='/vehicle/(\\d+)'>([^<]+)</a></h2>")
     private val cardStartRegex = Regex("<div class='vehicle-card'>")
-    private val nameRegex = Regex("<h2><a[^>]*>([^<]+)</a>")
     private val pillRegex = Regex(
         "<div class='pill (overdue|due_soon)'><span class='led'></span>" +
-            "<span class='lbl'>([^<]*)</span><span class='det'>([^<]*)</span></div>"
+            "<span class='lbl'>([^<]*)</span><span class='det'>[^<]*</span></div>"
     )
 
-    /**
-     * Every currently overdue or due-soon item across all vehicles, overdue
-     * first. Returns null if the server couldn't be reached at all (as
-     * opposed to an empty list, which means it WAS reached and everything is
-     * caught up).
-     */
-    fun fetchDueItems(): List<MaintenanceItem>? {
+    /** Every vehicle on the dashboard, in the order they're listed. */
+    fun fetchVehicles(): List<Vehicle>? {
         val html = fetchHtml() ?: return null
+        return vehicleHeaderRegex.findAll(html).map { Vehicle(it.groupValues[1], it.groupValues[2]) }.toList()
+    }
 
-        val cardStarts = cardStartRegex.findAll(html).map { it.range.first }.toList()
-        val items = mutableListOf<MaintenanceItem>()
-        cardStarts.forEachIndexed { i, start ->
-            val end = cardStarts.getOrElse(i + 1) { html.length }
+    /**
+     * Every currently overdue or due-soon item for ONE vehicle, overdue
+     * first. Returns null if the server couldn't be reached at all (as
+     * opposed to an empty list, which means it WAS reached and this vehicle
+     * is fully caught up).
+     */
+    fun fetchDueItems(vehicleId: String): List<MaintenanceItem>? {
+        val html = fetchHtml() ?: return null
+        val card = cardHtmlFor(html, vehicleId) ?: return emptyList()
+        return pillRegex.findAll(card)
+            .map { MaintenanceItem(vehicleId, it.groupValues[1], it.groupValues[2]) }
+            .sortedBy { if (it.status == "overdue") 0 else 1 }
+            .toList()
+    }
+
+    // Slices the page down to just the one <div class='vehicle-card'>...</div>
+    // block for vehicleId, so pillRegex only ever sees that vehicle's own
+    // pills and never another car's.
+    private fun cardHtmlFor(html: String, vehicleId: String): String? {
+        val starts = cardStartRegex.findAll(html).map { it.range.first }.toList()
+        starts.forEachIndexed { i, start ->
+            val end = starts.getOrElse(i + 1) { html.length }
             val card = html.substring(start, end)
-            val vehicleName = nameRegex.find(card)?.groupValues?.get(1) ?: "Vehicle"
-            pillRegex.findAll(card).forEach { match ->
-                items.add(MaintenanceItem(vehicleName, match.groupValues[1], match.groupValues[2], match.groupValues[3]))
-            }
+            val id = vehicleHeaderRegex.find(card)?.groupValues?.get(1)
+            if (id == vehicleId) return card
         }
-
-        return items.sortedBy { if (it.status == "overdue") 0 else 1 }
+        return null
     }
 
     private fun fetchHtml(): String? {
