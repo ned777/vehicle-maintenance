@@ -477,6 +477,9 @@ textarea { resize: vertical; min-height: 4.5em; }
 HEAD = (
     "<meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>"
     "<title>Vehicle Maintenance Record</title>"
+    "<link rel='icon' href=\"data:image/svg+xml,"
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>"
+    "<text y='.9em' font-size='90'>%F0%9F%94%A7</text></svg>\">"
     "<link rel='preconnect' href='https://fonts.googleapis.com'>"
     "<link href='https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Barlow:wght@400;500;600&display=swap' rel='stylesheet'>"
     f"<style>{CSS}</style>"
