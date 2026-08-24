@@ -1,10 +1,15 @@
 # Vehicle Maintenance Record
 
-A small, dependency-free Python HTTP server that tracks vehicle service
-history and tells you what's overdue. No pip installs, no framework, no
-database server — one file, the standard library, and a SQLite file next to
-it. Pairs with [Garage](https://github.com/ned777/vehicle-maintenance), a
-thin Android WebView app that points at this server.
+Self-hosted software for tracking vehicle service history and knowing
+exactly what's overdue — not a note-taking app repurposed for it, a real
+reminder engine built around how car maintenance actually works: mileage
+*and* time intervals, whichever comes first, same as an owner's manual.
+
+It's a complete, dependency-free system: a small Python web server (the
+whole backend — no framework, no database server, no `pip install`, just
+the standard library and a SQLite file) serving a full browser UI, plus a
+thin native Android front end for a proper home-screen presence. Everything
+runs on your own network — no cloud account, no external API.
 
 ## Features
 
@@ -44,16 +49,6 @@ thin Android WebView app that points at this server.
 - **Responsive**: a proper wide layout on desktop, a stacked card layout on
   phones (including inside the Android app's WebView) — no shared table grid
   to misalign between the two.
-
-## Screenshots
-
-<p>
-  <img src="screenshots/garage.png" width="45%" alt="Garage view listing vehicles with their most urgent reminders" />
-  <img src="screenshots/vehicle-detail.png" width="45%" alt="Vehicle detail page with all reminders and service history" />
-</p>
-<p>
-  <img src="screenshots/log-service.png" width="45%" alt="Log service form with checkboxes for each service type" />
-</p>
 
 ## Running it
 
