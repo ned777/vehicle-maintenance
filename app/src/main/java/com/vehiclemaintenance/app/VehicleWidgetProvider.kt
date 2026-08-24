@@ -11,17 +11,18 @@ import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 
 /**
- * The 2x2 home-screen widget's "brain" — see SysMonWidgetProvider in the
+ * The home-screen widget's "brain" — see SysMonWidgetProvider in the
  * sysmon-widget project for the fuller explanation of what an
  * AppWidgetProvider is. Each placed instance is configured to watch ONE
  * vehicle (picked in WidgetConfigActivity, since the server can hold more
- * than one car) and shows only that vehicle's overdue/due-soon items — a
- * 2x2 cell only has room for a couple of short lines.
+ * than one car), and always shows the same four categories — Oil,
+ * Transmission, Differential, Spark Plugs — each with its mileage
+ * remaining. The status dot still reflects that item's real state
+ * (red/amber/green) in case one of these four happens to be overdue or due
+ * soon.
  *
  * updatePeriodMillis is 0 (see vehicle_widget_info.xml) — the widget only
- * ever refreshes when tapped, via ACTION_REFRESH below. Tapping the
- * dedicated "Read more" row (shown when there's more than fits) instead
- * opens the app, via its own separate pending intent.
+ * ever refreshes when tapped, via ACTION_REFRESH below.
  */
 class VehicleWidgetProvider : AppWidgetProvider() {
 
@@ -29,10 +30,16 @@ class VehicleWidgetProvider : AppWidgetProvider() {
         const val ACTION_REFRESH = "com.vehiclemaintenance.app.ACTION_REFRESH"
         const val PREFS_NAME = "vehicle_widget"
 
-        // A 2x2 cell only fits about two short rows — see widget_vehicle.xml.
-        // If there's more than this many items, the last row becomes a
-        // "Read more" link instead of a third item.
-        private const val MAX_ROWS = 2
+        // The four categories this widget always shows, each matched by
+        // keyword against whatever the server actually labeled them (e.g.
+        // this Subaru's CVT fluid is labeled "Transmission Fluid") but
+        // displayed under our own short name rather than the server's.
+        private val FIXED_CATEGORIES = listOf(
+            "Oil" to listOf("oil"),
+            "Transmission" to listOf("cvt", "transmission"),
+            "Differential" to listOf("diff"),
+            "Spark Plugs" to listOf("spark")
+        )
 
         fun refreshAllWidgets(context: Context) {
             val intent = Intent(context, VehicleWidgetProvider::class.java).setAction(ACTION_REFRESH)
@@ -42,9 +49,8 @@ class VehicleWidgetProvider : AppWidgetProvider() {
         fun updateOneWidget(context: Context, manager: AppWidgetManager, id: Int) {
             val views = RemoteViews(context.packageName, R.layout.widget_vehicle)
 
-            // Tapping anywhere on the widget (other than the Read More row
-            // below) re-fetches from the server — this IS the refresh
-            // mechanism, there's no timer.
+            // Tapping anywhere on the widget re-fetches from the server —
+            // this IS the refresh mechanism, there's no timer.
             val refreshIntent = Intent(context, VehicleWidgetProvider::class.java).setAction(ACTION_REFRESH)
             val refreshPendingIntent = PendingIntent.getBroadcast(
                 context, 0, refreshIntent,
@@ -70,25 +76,28 @@ class VehicleWidgetProvider : AppWidgetProvider() {
 
             views.setTextViewText(R.id.vehicleNameText, vehicleName ?: context.getString(R.string.app_name))
 
-            val items = MaintenanceClient.fetchDueItems(vehicleId)
-            when {
-                items == null ->
-                    showMessage(context, views, context.getString(R.string.widget_unreachable), R.color.text_dim)
-                items.isEmpty() ->
-                    showMessage(context, views, context.getString(R.string.widget_all_good), R.color.ok)
-                else -> {
-                    views.setViewVisibility(R.id.allGoodText, View.GONE)
-                    views.setViewVisibility(R.id.itemsList, View.VISIBLE)
+            val items = MaintenanceClient.fetchVehicleItems(vehicleId)
+            if (items == null) {
+                showMessage(context, views, context.getString(R.string.widget_unreachable), R.color.text_dim)
+                manager.updateAppWidget(id, views)
+                return
+            }
 
-                    val overflow = items.size > MAX_ROWS
-                    val visibleItemCount = if (overflow) MAX_ROWS - 1 else items.size
-                    items.take(visibleItemCount).forEach { item ->
-                        views.addView(R.id.itemsList, buildItemRow(context, item))
-                    }
-                    if (overflow) {
-                        val remaining = items.size - visibleItemCount
-                        views.addView(R.id.itemsList, buildReadMoreRow(context, remaining))
-                    }
+            val highlights = FIXED_CATEGORIES.mapNotNull { (displayName, keywords) ->
+                val match = items.firstOrNull { item -> keywords.any { item.label.contains(it, ignoreCase = true) } }
+                match?.let { displayName to it }
+            }
+
+            if (highlights.isEmpty()) {
+                // None of the four usual categories are tracked for this
+                // vehicle — fall back to a plain message rather than
+                // showing an empty list.
+                showMessage(context, views, context.getString(R.string.widget_all_good), R.color.ok)
+            } else {
+                views.setViewVisibility(R.id.allGoodText, View.GONE)
+                views.setViewVisibility(R.id.itemsList, View.VISIBLE)
+                highlights.forEach { (displayName, item) ->
+                    views.addView(R.id.itemsList, buildHighlightRow(context, displayName, item))
                 }
             }
 
@@ -102,27 +111,21 @@ class VehicleWidgetProvider : AppWidgetProvider() {
             views.setTextColor(R.id.allGoodText, ContextCompat.getColor(context, colorRes))
         }
 
-        private fun buildItemRow(context: Context, item: MaintenanceItem): RemoteViews {
+        // Our own short category name, plus just the mileage-remaining
+        // clause of the item's detail string (e.g. "4,071 mi left · due
+        // 2027-02-01" -> "4,071 mi left") — the due date isn't the point
+        // here.
+        private fun buildHighlightRow(context: Context, displayName: String, item: MaintenanceItem): RemoteViews {
             val row = RemoteViews(context.packageName, R.layout.widget_item_row)
-            val dotRes = if (item.status == "overdue") R.drawable.widget_led_overdue else R.drawable.widget_led_due_soon
+            val dotRes = when (item.status) {
+                "overdue" -> R.drawable.widget_led_overdue
+                "due_soon" -> R.drawable.widget_led_due_soon
+                else -> R.drawable.widget_led_ok
+            }
             row.setImageViewResource(R.id.ledDot, dotRes)
-            row.setTextViewText(R.id.itemLabel, item.label)
-            return row
-        }
-
-        private fun buildReadMoreRow(context: Context, remaining: Int): RemoteViews {
-            val row = RemoteViews(context.packageName, R.layout.widget_item_row)
-            row.setImageViewResource(R.id.ledDot, R.drawable.widget_led_more)
-            row.setTextViewText(R.id.itemLabel, context.getString(R.string.widget_read_more, remaining))
-            row.setTextColor(R.id.itemLabel, ContextCompat.getColor(context, R.color.teal))
-
-            // Only this row opens the app — every other tap on the widget
-            // (see updateOneWidget above) triggers a refresh instead.
-            val openAppPendingIntent = PendingIntent.getActivity(
-                context, 0, Intent(context, MainActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            row.setOnClickPendingIntent(R.id.itemRowRoot, openAppPendingIntent)
+            row.setTextViewText(R.id.itemLabel, displayName)
+            row.setTextViewText(R.id.itemDetail, item.detail.substringBefore("·").trim())
+            row.setViewVisibility(R.id.itemDetail, View.VISIBLE)
             return row
         }
     }

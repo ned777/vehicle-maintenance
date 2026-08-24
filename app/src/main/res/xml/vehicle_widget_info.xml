@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Fixed at 2x2, not resizable — resizeMode="none" plus minWidth/minHeight
-  equal to a 2x2 cell is what pins the size. updatePeriodMillis="0" — no
+  Fixed size, not resizable (resizeMode="none") — tall enough for a
+  two-line vehicle name plus up to four rows. updatePeriodMillis="0" — no
   auto-refresh timer, the only way this widget refreshes is a tap (see
   VehicleWidgetProvider's ACTION_REFRESH). configure points at
   WidgetConfigActivity, which asks which vehicle to watch before the widget
   is actually placed.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="110dp"
-    android:minHeight="110dp"
+    android:minWidth="140dp"
+    android:minHeight="220dp"
     android:targetCellWidth="2"
-    android:targetCellHeight="2"
+    android:targetCellHeight="4"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/widget_vehicle"
     android:configure="com.vehiclemaintenance.app.WidgetConfigActivity"

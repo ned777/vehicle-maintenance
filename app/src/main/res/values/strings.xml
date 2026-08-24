@@ -6,7 +6,6 @@
     <string name="widget_all_good">All caught up!</string>
     <string name="widget_unreachable">Can\'t reach server</string>
     <string name="widget_no_vehicle">No vehicle selected</string>
-    <string name="widget_read_more">Read more (+%1$d)</string>
 
     <!-- WidgetConfigActivity's vehicle-picker screen. -->
     <string name="choose_vehicle">Choose a vehicle</string>

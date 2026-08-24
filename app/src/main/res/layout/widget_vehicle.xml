@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The widget's own layout, fixed at 2x2 (see vehicle_widget_info.xml). Only
-  one of allGoodText / itemsList is visible at a time —
+  The widget's own layout (see vehicle_widget_info.xml for its fixed size).
+  Only one of allGoodText / itemsList is visible at a time —
   VehicleWidgetProvider.updateOneWidget() toggles which, and populates
   itemsList's rows (from widget_item_row.xml) in code.
 -->
@@ -11,32 +11,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/widget_outline_background"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp">
 
-    <!-- Which vehicle this widget instance was configured to watch. -->
+    <!-- Which vehicle this widget instance was configured to watch. Allowed
+         to wrap to a second line (a long "2019 Subaru Forester"-style name
+         forced onto one line was stretching/overflowing) with its own side
+         margin so it doesn't run edge to edge. -->
     <TextView
         android:id="@+id/vehicleNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
         android:text="@string/app_name"
         android:textColor="@color/accent"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:textStyle="bold"
         android:textAllCaps="true"
-        android:letterSpacing="0.04"
-        android:singleLine="true"
+        android:letterSpacing="0.03"
+        android:gravity="center"
+        android:maxLines="2"
         android:ellipsize="end" />
 
-    <!-- Shown only when there is nothing overdue/due-soon, or on error. -->
+    <!-- Shown only when there is nothing to list at all, or on error. -->
     <TextView
         android:id="@+id/allGoodText"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="6dp"
         android:gravity="center"
         android:textColor="@color/ok"
         android:textSize="15sp"
@@ -44,15 +50,14 @@
         android:visibility="gone"
         android:text="" />
 
-    <!-- Populated with up to two widget_item_row rows (the last one becomes
-         a "Read more" link instead of an item once there's overflow). -->
+    <!-- Populated with four widget_item_row rows: Oil, Transmission,
+         Differential, Spark Plugs, each with its mileage remaining. -->
     <LinearLayout
         android:id="@+id/itemsList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="4dp"
-        android:orientation="vertical"
-        android:gravity="center_vertical" />
+        android:layout_marginTop="6dp"
+        android:orientation="vertical" />
 
 </LinearLayout>
