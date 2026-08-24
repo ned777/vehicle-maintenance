@@ -50,6 +50,16 @@ runs on your own network — no cloud account, no external API.
   phones (including inside the Android app's WebView) — no shared table grid
   to misalign between the two.
 
+## Screenshots
+
+<p>
+  <img src="screenshots/garage.png" width="45%" alt="Garage view listing vehicles with their most urgent reminders" />
+  <img src="screenshots/vehicle-detail.png" width="45%" alt="Vehicle detail page with all reminders and service history" />
+</p>
+<p>
+  <img src="screenshots/log-service.png" width="45%" alt="Log service form with checkboxes for each service type" />
+</p>
+
 ## Running it
 
 Needs nothing but Python 3 — no `pip install`, no virtualenv.
