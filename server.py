@@ -795,6 +795,12 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(encoded)))
+        # Without this, hitting the back button (e.g. leaving the trash page
+        # after emptying it) can restore the browser's cached snapshot of the
+        # PREVIOUS page instead of re-fetching it — the vehicle page then
+        # shows a stale "Trash (3)" count until a manual reload. no-store
+        # rules out both that disk/memory cache and the back/forward cache.
+        self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(encoded)
 
