@@ -6,4 +6,15 @@
     <color name="panel">#0D0D0F</color>
     <color name="accent">#D21F2E</color>
     <color name="accent2">#E0A526</color>
+
+    <!-- Widget-only additions, matching the server's ok/warn/danger/text-dim
+         status-pill colors exactly (see MainActivity's fetched dashboard
+         CSS) so the widget's dots read the same as the pills on the page
+         itself. -->
+    <color name="white">#FFFFFF</color>
+    <color name="teal">#00E0B8</color>
+    <color name="ok">#2FB35C</color>
+    <color name="warn">#E0A526</color>
+    <color name="danger">#E8404D</color>
+    <color name="text_dim">#8B8B93</color>
 </resources>

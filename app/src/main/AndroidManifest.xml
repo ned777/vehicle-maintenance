@@ -20,5 +20,23 @@
             </intent-filter>
         </activity>
 
+        <!--
+          The home-screen widget's brain (see VehicleWidgetProvider.kt).
+          com.vehiclemaintenance.app.ACTION_REFRESH is our own custom
+          broadcast, fired when the widget is tapped.
+        -->
+        <receiver
+            android:name=".VehicleWidgetProvider"
+            android:label="@string/widget_label_vehicle"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.vehiclemaintenance.app.ACTION_REFRESH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/vehicle_widget_info" />
+        </receiver>
+
     </application>
 </manifest>

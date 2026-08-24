@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One overdue/due-soon row: a colored status dot, the service name, and its
+  detail line (e.g. "11,721 mi over · overdue since 2025-12-01"). Inflated
+  and added via RemoteViews.addView() in VehicleWidgetProvider — a bounded
+  handful of items per refresh, so a plain LinearLayout of these is simpler
+  than standing up a RemoteViewsService/ListView adapter for it.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <ImageView
+        android:id="@+id/ledDot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:src="@drawable/widget_led_overdue" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/itemDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_dim"
+            android:textSize="11sp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="" />
+
+    </LinearLayout>
+
+</LinearLayout>

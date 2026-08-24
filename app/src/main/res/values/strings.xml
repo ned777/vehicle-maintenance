@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Garage</string>
+
+    <!-- Shown as the widget's own name in the OS's "add a widget" picker. -->
+    <string name="widget_label_vehicle">Garage Maintenance</string>
+    <string name="widget_all_good">Your car maintenance is great — nothing due.</string>
+    <string name="widget_unreachable">Can\'t reach the server</string>
 </resources>
