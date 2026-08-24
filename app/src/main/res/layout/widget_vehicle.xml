@@ -11,7 +11,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/widget_outline_background"
-    android:paddingTop="8dp"
+    android:paddingTop="14dp"
     android:paddingBottom="6dp"
     android:paddingStart="14dp"
     android:paddingEnd="14dp">
