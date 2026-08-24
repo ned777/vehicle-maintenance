@@ -11,21 +11,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/widget_outline_background"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="6dp"
     android:paddingStart="14dp"
     android:paddingEnd="14dp">
 
     <!-- Which vehicle this widget instance was configured to watch. Allowed
          to wrap to a second line (a long "2019 Subaru Forester"-style name
          forced onto one line was stretching/overflowing) with its own side
-         margin so it doesn't run edge to edge. -->
+         margin so it doesn't run edge to edge. includeFontPadding="false"
+         for the same reason as the item rows — every bit of unnecessary
+         vertical space here is space stolen from the four rows below. -->
     <TextView
         android:id="@+id/vehicleNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
+        android:includeFontPadding="false"
         android:text="@string/app_name"
         android:textColor="@color/accent"
         android:textSize="13sp"
@@ -42,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:textColor="@color/ok"
         android:textSize="15sp"
@@ -57,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="4dp"
         android:orientation="vertical" />
 
 </LinearLayout>

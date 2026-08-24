@@ -10,14 +10,13 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp">
 
     <ImageView
         android:id="@+id/ledDot"
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:layout_marginTop="2dp"
         android:src="@drawable/widget_led_ok" />
 
     <LinearLayout
@@ -27,10 +26,16 @@
         android:layout_marginStart="8dp"
         android:orientation="vertical">
 
+        <!-- includeFontPadding="false" strips the extra ascent/descent
+             padding Android normally reserves around text — with four rows
+             stacked in a fixed-height widget, that padding was enough on
+             its own to push the last row (Spark Plugs) past the bottom
+             edge and get clipped. -->
         <TextView
             android:id="@+id/itemLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -42,6 +47,7 @@
             android:id="@+id/itemDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:textColor="@color/text_dim"
             android:textSize="11sp"
             android:singleLine="true"
