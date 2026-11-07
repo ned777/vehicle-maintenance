@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
@@ -48,6 +49,7 @@ class VehicleWidgetProvider : AppWidgetProvider() {
 
         fun updateOneWidget(context: Context, manager: AppWidgetManager, id: Int) {
             val views = RemoteViews(context.packageName, R.layout.widget_vehicle)
+            WidgetCorners.apply(views, R.id.widgetRoot, manager, id)
 
             // Tapping anywhere on the widget re-fetches from the server —
             // this IS the refresh mechanism, there's no timer.
@@ -156,6 +158,19 @@ class VehicleWidgetProvider : AppWidgetProvider() {
         } else {
             super.onReceive(context, intent)
         }
+    }
+
+    // The launcher re-scales the widget when the home-screen grid changes; redraw
+    // so the border radius follows the new scale.
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
+        val pending = goAsync()
+        Thread {
+            try {
+                updateOneWidget(context, appWidgetManager, appWidgetId)
+            } finally {
+                pending.finish()
+            }
+        }.start()
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
