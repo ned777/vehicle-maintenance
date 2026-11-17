@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Fixed size, not resizable (resizeMode="none") — tall enough for a
-  two-line vehicle name plus up to four rows. updatePeriodMillis="0" — no
-  auto-refresh timer, the only way this widget refreshes is a tap (see
-  VehicleWidgetProvider's ACTION_REFRESH). configure points at
-  WidgetConfigActivity, which asks which vehicle to watch before the widget
-  is actually placed.
+  Fixed at exactly a 2x2 grid cell, matching the Today and Weather widgets.
+  resizeMode="none" drops the resize handles, and minResizeWidth/Height equal
+  minWidth/Height so there's no direction it could shrink into even if a
+  launcher ignored resizeMode. minWidth/minHeight use Android's standard
+  N-cell formula (70*N - 30dp, N=2 -> 110dp), the documented way to ask for
+  "exactly 2 columns by 2 rows" in whatever grid the launcher uses. A 2x2 on
+  a typical phone grid still fits the two-line vehicle name plus four rows.
+
+  updatePeriodMillis="0" — no auto-refresh timer; the only way this widget
+  refreshes is a tap (see VehicleWidgetProvider's ACTION_REFRESH). configure
+  points at WidgetConfigActivity, which asks which vehicle to watch before
+  the widget is actually placed.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="140dp"
-    android:minHeight="220dp"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="110dp"
     android:targetCellWidth="2"
-    android:targetCellHeight="4"
+    android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/widget_vehicle"
     android:configure="com.vehiclemaintenance.app.WidgetConfigActivity"
